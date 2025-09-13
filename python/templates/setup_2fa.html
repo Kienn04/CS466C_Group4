@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Setup 2FA</h2>
+                <p class="text-center text-muted mb-4">Scan QR code with Google Authenticator</p>
+                
+                <div class="text-center mb-4">
+                    <img src="data:image/png;base64,{{ qr_code }}" 
+                         alt="QR Code for {{ username }}" 
+                         class="img-fluid" style="max-width: 200px;">
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong>Instructions:</strong><br>
+                    1. Install Google Authenticator<br>
+                    2. Open app and tap "+"<br>
+                    3. Scan QR code above<br>
+                    4. Account will be added automatically
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">Continue to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

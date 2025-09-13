@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Verify 2FA</h2>
+                <p class="text-center text-muted mb-4">Enter 6-digit code from Google Authenticator</p>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Authentication Code</label>
+                        <input type="text" class="form-control text-center" name="token" 
+                               placeholder="000000" maxlength="6" pattern="[0-9]{6}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Verify Code</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

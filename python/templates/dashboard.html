@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Welcome, {{ user.username }}!</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5>2FA Status</h5>
+                                <p class="mb-0">
+                                    {% if user.is_2fa_enabled %}Enabled{% else %}Disabled{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h5>Account Info</h5>
+                                <p class="mb-0">{{ user.username }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <h5>Member Since</h5>
+                                <p class="mb-0">{{ user.created_at.strftime('%B %d, %Y') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    {% if user.is_2fa_enabled %}
+                        <form method="POST" action="{{ url_for('disable_2fa') }}">
+                            <button type="submit" class="btn btn-outline-warning w-100" 
+                                    onclick="return confirm('Are you sure you want to disable 2FA?')">
+                                Disable 2FA
+                            </button>
+                        </form>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
+                </div>
+
+                {% if user.is_2fa_enabled %}
+                <div class="alert alert-success mt-3">
+                    <strong>Great!</strong> Your account is protected with Two-Factor Authentication.
+                </div>
+                {% else %}
+                <div class="alert alert-warning mt-3">
+                    <strong>Security Notice:</strong> Two-Factor Authentication is not enabled.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
