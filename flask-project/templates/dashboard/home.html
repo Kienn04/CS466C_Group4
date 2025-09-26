@@ -1,0 +1,94 @@
+﻿{% extends "base.html" %}
+{% set title = t('nav_dashboard') %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="hero card">
+        <div>
+            <h1>{{ t('home_welcome', name=current_user.name) }}</h1>
+            <p>Stay on top of every project with clear priorities and focused teams.</p>
+        </div>
+        <button class="btn btn-primary" data-modal-open="project-modal">{{ t('home_create_project') }}</button>
+    </div>
+
+    <section class="card project-hub">
+        <header class="card-header">
+            <h2>{{ t('nav_projects') }}</h2>
+            <span class="muted">{{ projects|length }} active</span>
+        </header>
+        <div class="project-collection">
+            {% if projects %}
+                {% for entry in projects %}
+                <article class="project-row" data-role="{{ entry.role }}">
+                    <div class="idea">
+                        <h3>{{ entry.project.name }}</h3>
+                        <p>{{ entry.project.description or 'Plan your tasks and collaborate effortlessly.' }}</p>
+                    </div>
+                    <div class="meta">
+                        <span class="role-chip {% if entry.role == 'owner' %}owner{% else %}member{% endif %}">
+                            {{ 'Owner' if entry.role == 'owner' else 'Member' }}
+                        </span>
+                        <a class="btn btn-outline" href="{{ url_for('projects.detail', project_id=entry.project.id) }}">{{ t('button_view') }}</a>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <p class="empty">{{ t('home_no_projects') }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="card deadline-feed">
+        <header class="card-header">
+            <h2>{{ t('home_deadlines') }}</h2>
+        </header>
+        <div class="deadline-list">
+            {% if deadline_notifications %}
+                {% for note in deadline_notifications %}
+                <div class="deadline-item">
+                    <div>
+                        <h3>{{ note.payload.task_title }}</h3>
+                        <p>{{ note.payload.project_name }}</p>
+                    </div>
+                    {% if note.payload.due %}
+                    <span class="due">{{ t('task_due', date=note.payload.due[:16].replace('T', ' ')) }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty">{{ t('notifications_empty') }}</p>
+            {% endif %}
+        </div>
+    </section>
+</section>
+
+<div class="modal" id="project-modal" hidden>
+    <div class="modal-dialog">
+        <header>
+            <h2>{{ t('home_create_project') }}</h2>
+            <button type="button" class="modal-close" data-modal-close>&times;</button>
+        </header>
+        <form method="post" action="{{ url_for('projects.create_project') }}" class="modal-body" novalidate>
+            {{ project_form.hidden_tag() }}
+            <label class="input-field">
+                <span>{{ t('form_project_name') }}</span>
+                {{ project_form.name(class_='input-control') }}
+                {% if project_form.name.errors %}
+                <small class="error">{{ project_form.name.errors[0] }}</small>
+                {% endif %}
+            </label>
+            <label class="input-field">
+                <span>{{ t('form_project_description') }}</span>
+                {{ project_form.description(class_='input-control', rows='3') }}
+                {% if project_form.description.errors %}
+                <small class="error">{{ project_form.description.errors[0] }}</small>
+                {% endif %}
+            </label>
+            <footer class="modal-footer">
+                <button type="button" class="btn" data-modal-close>Cancel</button>
+                {{ project_form.submit(class_='btn btn-primary', value=t('button_create')) }}
+            </footer>
+        </form>
+    </div>
+</div>
+{% endblock %}
